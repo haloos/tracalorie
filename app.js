@@ -2,6 +2,7 @@
 
 // Item Controller
 const ItemCtrl = (function(){
+  
   // Item Constructor
   const Item = function(id, name, calories){
     this.id = id;
@@ -20,6 +21,7 @@ const ItemCtrl = (function(){
     totalCalories: 0
   }
 
+  // Public methods
   return {
     logData: function(){
       return data;
@@ -29,12 +31,18 @@ const ItemCtrl = (function(){
 
 // UI Controller
 const UICtrl = (function(){
+
+  // Public methods
+  return {
+
+  }
   
 })();
 
 // App Controller
 const App = (function(ItemCtrl, UICtrl){
 
+  // Public methods
   return {
     init: function(){
       console.log('App is online...');
