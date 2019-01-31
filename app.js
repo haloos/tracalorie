@@ -1,8 +1,8 @@
 // Storage Controller
 
+
 // Item Controller
 const ItemCtrl = (function(){
-  
   // Item Constructor
   const Item = function(id, name, calories){
     this.id = id;
@@ -14,8 +14,8 @@ const ItemCtrl = (function(){
   const data = {
     items: [
       // {id: 0, name: 'Steak Dinner', calories: 1200},
-      // {id: 1, name: 'Ribs', calories: 1500},
-      // {id: 2, name: 'Pizza', calories: 1800},
+      // {id: 1, name: 'Cookie', calories: 400},
+      // {id: 2, name: 'Eggs', calories: 300}
     ],
     currentItem: null,
     totalCalories: 0
@@ -23,28 +23,42 @@ const ItemCtrl = (function(){
 
   // Public methods
   return {
-    getitems: function(){
+    getItems: function(){
       return data.items;
     },
     addItem: function(name, calories){
       let ID;
       // Create ID
       if(data.items.length > 0){
-        ID = data.items[data.items.length -1].id + 1; 
+        ID = data.items[data.items.length - 1].id + 1;
       } else {
         ID = 0;
       }
 
       // Calories to number
-       calories = parseInt(calories);
+      calories = parseInt(calories);
 
       // Create new item
       newItem = new Item(ID, name, calories);
 
       // Add to items array
-     data.items.push(newItem);
+      data.items.push(newItem);
 
-     return newItem;
+      return newItem;
+    },
+    getTotalCalories: function(){
+      let total = 0;
+
+      // Loop through items and add cals
+      data.items.forEach(function(item){
+        total += item.calories;
+      });
+
+      // Set total cal in data structure
+      data.totalCalories = total;
+
+      // Return total
+      return data.totalCalories;
     },
     logData: function(){
       return data;
@@ -52,28 +66,30 @@ const ItemCtrl = (function(){
   }
 })();
 
+
+
 // UI Controller
 const UICtrl = (function(){
   const UISelectors = {
     itemList: '#item-list',
     addBtn: '.add-btn',
     itemNameInput: '#item-name',
-    itemCaloriesInput: '#item-calories'
+    itemCaloriesInput: '#item-calories',
+    totalCalories: '.total-calories'
   }
-
-
+  
   // Public methods
   return {
     populateItemList: function(items){
       let html = '';
 
       items.forEach(function(item){
-          html += `<li class="collection-item" id="item-${item.id}">
-          <strong>${item.name}: </strong> <em>${item.calories} Calories</em>
-          <a href="#" class="secondary-content">
-            <i class="edit-item fa fa-pencil"></i>
-      </a>
-    </li>`;
+        html += `<li class="collection-item" id="item-${item.id}">
+        <strong>${item.name}: </strong> <em>${item.calories} Calories</em>
+        <a href="#" class="secondary-content">
+          <i class="edit-item fa fa-pencil"></i>
+        </a>
+      </li>`;
       });
 
       // Insert list items
@@ -82,44 +98,45 @@ const UICtrl = (function(){
     getItemInput: function(){
       return {
         name:document.querySelector(UISelectors.itemNameInput).value,
-        calories:document.querySelector(UISelectors.itemCaloriesInput).value,
+        calories:document.querySelector(UISelectors.itemCaloriesInput).value
       }
     },
     addListItem: function(item){
-      // Show ther list
+      // Show the list
       document.querySelector(UISelectors.itemList).style.display = 'block';
       // Create li element
       const li = document.createElement('li');
       // Add class
-      li.className = 'collection-item'; 
+      li.className = 'collection-item';
       // Add ID
       li.id = `item-${item.id}`;
       // Add HTML
       li.innerHTML = `<strong>${item.name}: </strong> <em>${item.calories} Calories</em>
       <a href="#" class="secondary-content">
         <i class="edit-item fa fa-pencil"></i>
-  </a>`;
+      </a>`;
       // Insert item
-     document.querySelector(UISelectors.itemList).insertAdjacentElement('beforeend', li)
+      document.querySelector(UISelectors.itemList).insertAdjacentElement('beforeend', li)
     },
-
     clearInput: function(){
       document.querySelector(UISelectors.itemNameInput).value = '';
       document.querySelector(UISelectors.itemCaloriesInput).value = '';
-    }, 
-    hideList: function(){
-     document.querySelector(UISelectors.itemList).style.display = 'none';
     },
-
+    hideList: function(){
+      document.querySelector(UISelectors.itemList).style.display = 'none';
+    },
+    showTotalCalories: function(totalCalories){
+      document.querySelector(UISelectors.totalCalories).textContent = totalCalories;
+    },
     getSelectors: function(){
       return UISelectors;
     }
-    
   }
-  
 })();
 
-// App controller
+
+
+// App Controller
 const App = (function(ItemCtrl, UICtrl){
   // Load event listeners
   const loadEventListeners = function(){
@@ -139,13 +156,19 @@ const App = (function(ItemCtrl, UICtrl){
     if(input.name !== '' && input.calories !== ''){
       // Add item
       const newItem = ItemCtrl.addItem(input.name, input.calories);
-      // Add item to UI list 
+
+      // Add item to UI list
       UICtrl.addListItem(newItem);
 
-      // Clear input
+      // Get total calories
+      const totalCalories = ItemCtrl.getTotalCalories();
+      // Add total calories to UI
+      UICtrl.showTotalCalories(totalCalories);
+
+      // Clear fields
       UICtrl.clearInput();
     }
-     
+
     e.preventDefault();
   }
 
@@ -153,7 +176,7 @@ const App = (function(ItemCtrl, UICtrl){
   return {
     init: function(){
       // Fetch items from data structure
-      const items = ItemCtrl.getitems();
+      const items = ItemCtrl.getItems();
 
       // Check if any items
       if(items.length === 0){
@@ -161,16 +184,19 @@ const App = (function(ItemCtrl, UICtrl){
       } else {
         // Populate list with items
         UICtrl.populateItemList(items);
-
       }
 
-      
-      // Load event litseners
+      // Get total calories
+      const totalCalories = ItemCtrl.getTotalCalories();
+      // Add total calories to UI
+      UICtrl.showTotalCalories(totalCalories);
+
+      // Load event listeners
       loadEventListeners();
     }
   }
   
 })(ItemCtrl, UICtrl);
 
-// Initialize App 
+// Initialize App
 App.init();
