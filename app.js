@@ -235,11 +235,13 @@ const App = (function(ItemCtrl, UICtrl){
   document.querySelector(UISelectors.itemList).addEventListener('click', UICtrl.clearEditState);
 
     // Update item event 
-    document.querySelector(UISelectors.backBtn).addEventListener('click', itemUpdateSubmit);
+    document.querySelector(UISelectors.updateBtn).addEventListener('click', itemUpdateSubmit);
+
+    // Delete item event 
+    document.querySelector(UISelectors.deleteBtn).addEventListener('click', itemDeleteSubmit);
 
     // Back btn event 
-    document.querySelector(UISelectors.updateBtn
-    getSelectors: function(){).addEventListener('click', itemUpdateSubmit);
+    document.querySelector(UISelectors.backBtn).addEventListener('click', UICtrl.clearEditState);
 
     // Edit icon click event 
     document.querySelector(UISelectors.itemList).addEventListener('click', itemEditClick);
@@ -294,6 +296,14 @@ const App = (function(ItemCtrl, UICtrl){
 
     e.preventDefault();
   }
+
+  // Delete button event 
+  const itemDeleteSubmit = function(e){
+    
+    
+    e.preventDefault();
+  }
+
 
   // Update item submit
   const itemUpdateSubmit = function(e){
