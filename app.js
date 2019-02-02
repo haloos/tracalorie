@@ -209,6 +209,7 @@ const UICtrl = (function(){
 
 
 
+
 // App Controller
 const App = (function(ItemCtrl, UICtrl){
   // Load event listeners
@@ -226,8 +227,19 @@ const App = (function(ItemCtrl, UICtrl){
       return false;
     }
   });
+
+  // Edit icon click event
+  
+
+  
+  document.querySelector(UISelectors.itemList).addEventListener('click', UICtrl.clearEditState);
+
     // Update item event 
-    document.querySelector(UISelectors.updateBtn).addEventListener('click', itemUpdateSubmit);
+    document.querySelector(UISelectors.backBtn).addEventListener('click', itemUpdateSubmit);
+
+    // Back btn event 
+    document.querySelector(UISelectors.updateBtn
+    getSelectors: function(){).addEventListener('click', itemUpdateSubmit);
 
     // Edit icon click event 
     document.querySelector(UISelectors.itemList).addEventListener('click', itemEditClick);
@@ -293,6 +305,13 @@ const App = (function(ItemCtrl, UICtrl){
 
     // Update UI
     UICtrl.updateListItem(updatedItem);
+
+    // Get total calories
+    const totalCalories = ItemCtrl.getTotalCalories();
+    // Add total calories to UI
+    UICtrl.showTotalCalories(totalCalories); 
+
+    UICtrl.clearEditState();
 
     e.preventDefault();
   }
